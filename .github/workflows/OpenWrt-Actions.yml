@@ -260,11 +260,17 @@ jobs:
           echo "写入配置文件..."
           mv ${WORKPATH}/$CONFIG_FILE .config
 
-          # 精简 Argon：移除依赖缺失的旧版独立配置插件及其翻译包。
-          # 当前源码树的 scripts/config 是目录，直接调用会失败；在 .config 中显式禁用。
-          sed -i '/^CONFIG_PACKAGE_luci-app-argon-config=/d; /^CONFIG_PACKAGE_luci-i18n-argon-config-zh-cn=/d' .config
-          printf '%s\\n' 'CONFIG_PACKAGE_luci-app-argon-config=n' 'CONFIG_PACKAGE_luci-i18n-argon-config-zh-cn=n' >> .config
+          # 精简 Argon：旧版独立配置翻译包依赖当前 feeds 中不存在的 luci-app-argon-config。
+          # 先规范化配置并生成 defconfig，再在最后一步强制取消这两个包，避免被 Kconfig 默认值重新启用。
+          sed -i '/^CONFIG_PACKAGE_luci-app-argon-config=/d; /^CONFIG_PACKAGE_luci-i18n-argon-config-zh-cn=/d; /^# CONFIG_PACKAGE_luci-app-argon-config is not set$/d; /^# CONFIG_PACKAGE_luci-i18n-argon-config-zh-cn is not set$/d' .config
           make defconfig
+          sed -i '/^CONFIG_PACKAGE_luci-app-argon-config=/d; /^CONFIG_PACKAGE_luci-i18n-argon-config-zh-cn=/d; /^# CONFIG_PACKAGE_luci-app-argon-config is not set$/d; /^# CONFIG_PACKAGE_luci-i18n-argon-config-zh-cn is not set$/d' .config
+          cat >> .config <<'EOF'
+          # CONFIG_PACKAGE_luci-app-argon-config is not set
+          # CONFIG_PACKAGE_luci-i18n-argon-config-zh-cn is not set
+          EOF
+          echo "验证 Argon 旧配置包已禁用："
+          grep -E 'argon-config' .config || true
 
           # echo "GitHub Action 移除国内下载源"
           # PROJECT_MIRRORS_FILE="scripts/projectsmirrors.json"
