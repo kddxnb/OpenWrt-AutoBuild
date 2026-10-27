@@ -1,6 +1,11 @@
 
 #!/bin/bash
 
+# x86_64 精简固件不需要 shortcut-fe 硬件流量加速补丁。
+# 当前 Lean 源码中的该补丁与 Linux 6.18.58 的 skbuff.h 上下文不匹配，
+# 会在 toolchain/kernel-headers 阶段导致整个编译失败；移除该补丁不影响 OpenClash。
+rm -f target/linux/generic/hack-6.18/953-net-patch-linux-kernel-to-support-shortcut-fe.patch
+
 # 安装额外依赖软件包
 # sudo -E apt-get -y install rename
 
