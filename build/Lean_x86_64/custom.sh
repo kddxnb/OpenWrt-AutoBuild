@@ -218,34 +218,27 @@ EOF
 # 第三方插件选择:
 cat >> .config <<EOF
 # CONFIG_PACKAGE_luci-app-oaf=y #应用过滤
-CONFIG_PACKAGE_luci-app-openclash=y #OpenClash客户端
-CONFIG_PACKAGE_luci-app-nikki=y #nikki 客户端
-# CONFIG_PACKAGE_luci-app-serverchan=y #微信推送
-# CONFIG_PACKAGE_luci-app-eqos=y #IP限速
-# CONFIG_PACKAGE_luci-app-control-weburl=y #网址过滤
-# CONFIG_PACKAGE_luci-app-smartdns=y #smartdns服务器
-# CONFIG_PACKAGE_luci-app-adguardhome=y #ADguardhome
-CONFIG_PACKAGE_luci-app-poweroff=y #关机（增加关机功能）
-# CONFIG_PACKAGE_luci-app-argon-config=y #argon主题设置
-# CONFIG_PACKAGE_luci-app-autotimeset=y #定时重启系统，网络
-# CONFIG_PACKAGE_luci-app-ddnsto=y #小宝开发的DDNS.to内网穿透
-# CONFIG_PACKAGE_ddnsto=y #DDNS.to内网穿透软件包
+CONFIG_PACKAGE_luci-app-openclash=y #唯一代理客户端：OpenClash（Meta/Mihomo）
+# 不编译 Nikki、Passwall、SSR-Plus、V2Ray 服务端及其他代理客户端
+CONFIG_PACKAGE_luci-app-nikki=n
+CONFIG_PACKAGE_luci-app-passwall=n
+CONFIG_PACKAGE_luci-app-passwall2=n
+CONFIG_PACKAGE_luci-app-ssr-plus=n
+CONFIG_PACKAGE_luci-app-v2ray-server=n
+# 其他可选 LuCI 应用保持关闭，精简固件
 EOF
 
-# ShadowsocksR插件:
+# 关闭其他代理客户端及其附加组件
 cat >> .config <<EOF
-CONFIG_PACKAGE_luci-app-ssr-plus=y
-# CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_SagerNet_Core is not set
-EOF
-
-# Passwall插件:
-cat >> .config <<EOF
-CONFIG_PACKAGE_luci-app-passwall=y
-# CONFIG_PACKAGE_luci-app-passwall2=y
-# CONFIG_PACKAGE_naiveproxy=y
-CONFIG_PACKAGE_chinadns-ng=y
-# CONFIG_PACKAGE_brook=y
-CONFIG_PACKAGE_trojan-go=y
+CONFIG_PACKAGE_luci-app-ssr-plus=n
+CONFIG_PACKAGE_luci-app-passwall=n
+CONFIG_PACKAGE_luci-app-passwall2=n
+CONFIG_PACKAGE_luci-app-nikki=n
+CONFIG_PACKAGE_luci-app-v2ray-server=n
+CONFIG_PACKAGE_chinadns-ng=n
+CONFIG_PACKAGE_trojan-go=n
+CONFIG_PACKAGE_naiveproxy=n
+CONFIG_PACKAGE_brook=n
 CONFIG_PACKAGE_xray-plugin=n
 CONFIG_PACKAGE_shadowsocks-rust-sslocal=n
 EOF
@@ -272,7 +265,7 @@ EOF
 
 # Turbo ACC 网络加速:
 cat >> .config <<EOF
-CONFIG_PACKAGE_luci-app-turboacc=y
+# CONFIG_PACKAGE_luci-app-turboacc is not set
 EOF
 
 # 常用LuCI插件:
@@ -282,14 +275,14 @@ CONFIG_PACKAGE_luci-app-webadmin=n #Web管理页面设置
 CONFIG_PACKAGE_luci-app-ddns=n #DDNS服务
 CONFIG_DEFAULT_luci-app-vlmcsd=n #KMS激活服务器
 CONFIG_PACKAGE_luci-app-filetransfer=n #系统-文件传输
-CONFIG_PACKAGE_luci-app-quickfile=y #quickfile文件管理器
+CONFIG_PACKAGE_luci-app-quickfile=n #精简固件，不编译文件管理器
 CONFIG_PACKAGE_luci-app-autoreboot=n #定时重启
 CONFIG_PACKAGE_luci-app-upnp=n #通用即插即用UPnP(端口自动转发)
 CONFIG_PACKAGE_luci-app-arpbind=n #IP/MAC绑定
 CONFIG_PACKAGE_luci-app-accesscontrol=n #上网时间控制
 CONFIG_PACKAGE_luci-app-wol=n #网络唤醒
 CONFIG_PACKAGE_luci-app-nps=n #nps内网穿透
-CONFIG_PACKAGE_luci-app-frpc=y #Frp内网穿透
+CONFIG_PACKAGE_luci-app-frpc=n #不编译其他隧道/代理类应用
 CONFIG_PACKAGE_luci-app-nlbwmon=n #宽带流量监控
 CONFIG_PACKAGE_luci-app-wrtbwmon=n #实时流量监测
 CONFIG_PACKAGE_luci-app-haproxy-tcp=n #Haproxy负载均衡
@@ -313,7 +306,7 @@ CONFIG_PACKAGE_luci-app-wireguard=n #wireguard端
 #
 # VPN相关插件(禁用):
 #
-CONFIG_PACKAGE_luci-app-v2ray-server=y #V2ray服务器
+CONFIG_PACKAGE_luci-app-v2ray-server=n #不编译其他代理服务端
 CONFIG_PACKAGE_luci-app-pptp-server=n #PPTP VPN 服务器
 CONFIG_PACKAGE_luci-app-ipsec-vpnd=n #ipsec VPN服务
 CONFIG_PACKAGE_luci-app-openvpn-server=n #openvpn服务
@@ -332,6 +325,7 @@ EOF
 cat >> .config <<EOF
 CONFIG_PACKAGE_luci-theme-argon=y
 CONFIG_PACKAGE_luci-theme-edge=n
+CONFIG_PACKAGE_luci-i18n-base-zh-cn=y
 EOF
 
 # 常用软件包:
@@ -346,12 +340,6 @@ CONFIG_PACKAGE_nano=y
 CONFIG_PACKAGE_wget=y
 CONFIG_PACKAGE_bash=y
 CONFIG_PACKAGE_kmod-tun=y
-CONFIG_PACKAGE_snmpd=y
-CONFIG_PACKAGE_libcap=y
-CONFIG_PACKAGE_libcap-bin=y
-CONFIG_PACKAGE_ip6tables-mod-nat=y
-CONFIG_PACKAGE_iptables-mod-extra=y
-CONFIG_PACKAGE_vsftpd=y
 CONFIG_PACKAGE_openssh-sftp-server=y
 CONFIG_PACKAGE_qemu-ga=y
 CONFIG_PACKAGE_autocore-x86=y
