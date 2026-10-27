@@ -43,7 +43,8 @@ sed -i 's#192.168.1.1#10.0.0.1#g' $NET                                          
 # sed -i 's#LEDE#OpenWrt-X86#g' $NET                                                     # 修改默认名称为OpenWrt-X86
 sed -i 's@.*CYXluq4wUazHjmCDBCqXF*@#&@g' $ZZZ                                             # 取消系统默认密码
 sed -i "s/LEDE /ONE build $(TZ=UTC-8 date "+%Y.%m.%d") @ LEDE /g" $ZZZ              # 增加自己个性名称
-echo "uci set luci.main.mediaurlbase=/luci-static/argon" >> $ZZZ                      # 设置默认主题(如果编译可会自动修改默认主题的，有可能会失效)
+echo "uci set luci.main.mediaurlbase=/luci-static/argon" >> $ZZZ
+echo "uci set luci.main.lang='zh_cn'" >> $ZZZ                      # 设置默认主题(如果编译可会自动修改默认主题的，有可能会失效)
 
 # ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●● #
 
@@ -326,6 +327,7 @@ cat >> .config <<EOF
 CONFIG_PACKAGE_luci-theme-argon=y
 CONFIG_PACKAGE_luci-theme-edge=n
 CONFIG_PACKAGE_luci-i18n-base-zh-cn=y
+CONFIG_LUCI_LANG_zh_Hans=y # LuCI 简体中文语言
 EOF
 
 # 常用软件包:
