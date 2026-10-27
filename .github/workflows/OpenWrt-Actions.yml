@@ -259,6 +259,10 @@ jobs:
 
           echo "写入配置文件..."
           mv ${WORKPATH}/$CONFIG_FILE .config
+
+          # 精简 Argon：避免旧版独立翻译包依赖 feeds 中不存在的 luci-app-argon-config
+          ./scripts/config -d PACKAGE_luci-app-argon-config
+          ./scripts/config -d PACKAGE_luci-i18n-argon-config-zh-cn
           make defconfig
 
           # echo "GitHub Action 移除国内下载源"
