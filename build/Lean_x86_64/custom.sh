@@ -368,3 +368,10 @@ sed -i 's/^[ \t]*//g' ./.config
 cd $HOME
 
 # 配置文件创建完成
+
+# Argon 主题已包含设置功能；当前 feeds 中的旧版独立配置翻译包依赖缺失的 luci-app-argon-config，
+# 会导致 package/install 阶段失败。只保留 Argon 主题和 LuCI 简体中文，不选旧配置插件/翻译包。
+cat >> .config <<EOF
+CONFIG_PACKAGE_luci-app-argon-config=n
+CONFIG_PACKAGE_luci-i18n-argon-config-zh-cn=n
+EOF
