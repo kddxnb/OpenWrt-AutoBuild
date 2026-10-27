@@ -13,21 +13,9 @@ on:
   workflow_dispatch:
     inputs:
       Lean_x86_64:
-        description: '编译 Lean_x86_64'
+        description: '编译精简版 Lean_x86_64（OpenClash + Argon + 简体中文）'
         type: boolean
-        default: false
-      Lean_x86_64_Long:
-        description: '编译 Lean_x86_64_Long'
-        type: boolean
-        default: false
-      immortalwrt_x86_64:
-        description: '编译 immortalwrt_x86_64'
-        type: boolean
-        default: false
-      immortalwrt_ax6600:
-        description: '编译 immortalwrt_ax6600'
-        type: boolean
-        default: false
+        default: true
       CACHE_BUILD:
         description: '缓存加速'
         type: boolean
@@ -45,9 +33,9 @@ on:
         type: string
         default: ''
 
-# 定时触发编译(1,5,10,15,20,25,30早3点)
-  schedule:
-    - cron: 0 17 4,9,14,19,24,31 * *
+# 已关闭定时编译，避免无意中消耗 Actions 额度；需要时手动运行 workflow。
+# schedule:
+#   - cron: 0 17 4,9,14,19,24,31 * *
 
 # 点赞☆Star触发编译
 #  watch:
@@ -75,13 +63,10 @@ jobs:
           MODELS=()
           # 定时触发编译全部
           if [ "${{ github.event_name }}" = "schedule" ]; then
-            MODELS=("Lean_x86_64" "Lean_x86_64_Long" "immortalwrt_x86_64" "immortalwrt_ax6600")
+            MODELS=("Lean_x86_64")
           else
-            # 手动触发判断
+            # 本仓库仅保留 Lean x86_64 精简固件目标
             [ "${{ github.event.inputs.Lean_x86_64 }}" = "true" ] && MODELS+=("Lean_x86_64")
-            [ "${{ github.event.inputs.Lean_x86_64_Long }}" = "true" ] && MODELS+=("Lean_x86_64_Long")
-            [ "${{ github.event.inputs.immortalwrt_x86_64 }}" = "true" ] && MODELS+=("immortalwrt_x86_64")
-            [ "${{ github.event.inputs.immortalwrt_ax6600 }}" = "true" ] && MODELS+=("immortalwrt_ax6600")
           fi
           
           # 转换为 JSON 数组
