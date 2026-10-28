@@ -1,11 +1,6 @@
 
 #!/bin/bash
 
-# x86_64 精简固件不需要 shortcut-fe 硬件流量加速补丁。
-# 当前 Lean 源码中的该补丁与 Linux 6.18.58 的 skbuff.h 上下文不匹配，
-# 会在 toolchain/kernel-headers 阶段导致整个编译失败；移除该补丁不影响 OpenClash。
-rm -f target/linux/generic/hack-6.18/953-net-patch-linux-kernel-to-support-shortcut-fe.patch
-
 # 安装额外依赖软件包
 # sudo -E apt-get -y install rename
 
@@ -48,8 +43,7 @@ sed -i 's#192.168.1.1#10.0.0.1#g' $NET                                          
 # sed -i 's#LEDE#OpenWrt-X86#g' $NET                                                     # 修改默认名称为OpenWrt-X86
 sed -i 's@.*CYXluq4wUazHjmCDBCqXF*@#&@g' $ZZZ                                             # 取消系统默认密码
 sed -i "s/LEDE /ONE build $(TZ=UTC-8 date "+%Y.%m.%d") @ LEDE /g" $ZZZ              # 增加自己个性名称
-echo "uci set luci.main.mediaurlbase=/luci-static/argon" >> $ZZZ
-echo "uci set luci.main.lang='zh_cn'" >> $ZZZ                      # 设置默认主题(如果编译可会自动修改默认主题的，有可能会失效)
+echo "uci set luci.main.mediaurlbase=/luci-static/argon" >> $ZZZ                      # 设置默认主题(如果编译可会自动修改默认主题的，有可能会失效)
 
 # ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●● #
 
@@ -224,27 +218,34 @@ EOF
 # 第三方插件选择:
 cat >> .config <<EOF
 # CONFIG_PACKAGE_luci-app-oaf=y #应用过滤
-CONFIG_PACKAGE_luci-app-openclash=y #唯一代理客户端：OpenClash（Meta/Mihomo）
-# 不编译 Nikki、Passwall、SSR-Plus、V2Ray 服务端及其他代理客户端
-CONFIG_PACKAGE_luci-app-nikki=n
-CONFIG_PACKAGE_luci-app-passwall=n
-CONFIG_PACKAGE_luci-app-passwall2=n
-CONFIG_PACKAGE_luci-app-ssr-plus=n
-CONFIG_PACKAGE_luci-app-v2ray-server=n
-# 其他可选 LuCI 应用保持关闭，精简固件
+CONFIG_PACKAGE_luci-app-openclash=y #OpenClash客户端
+CONFIG_PACKAGE_luci-app-nikki=n #nikki 客户端
+# CONFIG_PACKAGE_luci-app-serverchan=y #微信推送
+# CONFIG_PACKAGE_luci-app-eqos=y #IP限速
+# CONFIG_PACKAGE_luci-app-control-weburl=y #网址过滤
+# CONFIG_PACKAGE_luci-app-smartdns=y #smartdns服务器
+# CONFIG_PACKAGE_luci-app-adguardhome=y #ADguardhome
+CONFIG_PACKAGE_luci-app-poweroff=n #关机（增加关机功能）
+# CONFIG_PACKAGE_luci-app-argon-config=y #argon主题设置
+# CONFIG_PACKAGE_luci-app-autotimeset=y #定时重启系统，网络
+# CONFIG_PACKAGE_luci-app-ddnsto=y #小宝开发的DDNS.to内网穿透
+# CONFIG_PACKAGE_ddnsto=y #DDNS.to内网穿透软件包
 EOF
 
-# 关闭其他代理客户端及其附加组件
+# ShadowsocksR插件:
 cat >> .config <<EOF
 CONFIG_PACKAGE_luci-app-ssr-plus=n
+# CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_SagerNet_Core is not set
+EOF
+
+# Passwall插件:
+cat >> .config <<EOF
 CONFIG_PACKAGE_luci-app-passwall=n
-CONFIG_PACKAGE_luci-app-passwall2=n
-CONFIG_PACKAGE_luci-app-nikki=n
-CONFIG_PACKAGE_luci-app-v2ray-server=n
+# CONFIG_PACKAGE_luci-app-passwall2=y
+# CONFIG_PACKAGE_naiveproxy=y
 CONFIG_PACKAGE_chinadns-ng=n
+# CONFIG_PACKAGE_brook=y
 CONFIG_PACKAGE_trojan-go=n
-CONFIG_PACKAGE_naiveproxy=n
-CONFIG_PACKAGE_brook=n
 CONFIG_PACKAGE_xray-plugin=n
 CONFIG_PACKAGE_shadowsocks-rust-sslocal=n
 EOF
@@ -271,7 +272,7 @@ EOF
 
 # Turbo ACC 网络加速:
 cat >> .config <<EOF
-# CONFIG_PACKAGE_luci-app-turboacc is not set
+CONFIG_PACKAGE_luci-app-turboacc=n
 EOF
 
 # 常用LuCI插件:
@@ -281,14 +282,14 @@ CONFIG_PACKAGE_luci-app-webadmin=n #Web管理页面设置
 CONFIG_PACKAGE_luci-app-ddns=n #DDNS服务
 CONFIG_DEFAULT_luci-app-vlmcsd=n #KMS激活服务器
 CONFIG_PACKAGE_luci-app-filetransfer=n #系统-文件传输
-CONFIG_PACKAGE_luci-app-quickfile=n #精简固件，不编译文件管理器
+CONFIG_PACKAGE_luci-app-quickfile=n #quickfile文件管理器
 CONFIG_PACKAGE_luci-app-autoreboot=n #定时重启
 CONFIG_PACKAGE_luci-app-upnp=n #通用即插即用UPnP(端口自动转发)
 CONFIG_PACKAGE_luci-app-arpbind=n #IP/MAC绑定
 CONFIG_PACKAGE_luci-app-accesscontrol=n #上网时间控制
 CONFIG_PACKAGE_luci-app-wol=n #网络唤醒
 CONFIG_PACKAGE_luci-app-nps=n #nps内网穿透
-CONFIG_PACKAGE_luci-app-frpc=n #不编译其他隧道/代理类应用
+CONFIG_PACKAGE_luci-app-frpc=n #Frp内网穿透
 CONFIG_PACKAGE_luci-app-nlbwmon=n #宽带流量监控
 CONFIG_PACKAGE_luci-app-wrtbwmon=n #实时流量监测
 CONFIG_PACKAGE_luci-app-haproxy-tcp=n #Haproxy负载均衡
@@ -312,7 +313,7 @@ CONFIG_PACKAGE_luci-app-wireguard=n #wireguard端
 #
 # VPN相关插件(禁用):
 #
-CONFIG_PACKAGE_luci-app-v2ray-server=n #不编译其他代理服务端
+CONFIG_PACKAGE_luci-app-v2ray-server=n #V2ray服务器
 CONFIG_PACKAGE_luci-app-pptp-server=n #PPTP VPN 服务器
 CONFIG_PACKAGE_luci-app-ipsec-vpnd=n #ipsec VPN服务
 CONFIG_PACKAGE_luci-app-openvpn-server=n #openvpn服务
@@ -331,8 +332,6 @@ EOF
 cat >> .config <<EOF
 CONFIG_PACKAGE_luci-theme-argon=y
 CONFIG_PACKAGE_luci-theme-edge=n
-CONFIG_PACKAGE_luci-i18n-base-zh-cn=y
-CONFIG_LUCI_LANG_zh_Hans=y # LuCI 简体中文语言
 EOF
 
 # 常用软件包:
@@ -347,8 +346,14 @@ CONFIG_PACKAGE_nano=y
 CONFIG_PACKAGE_wget=y
 CONFIG_PACKAGE_bash=y
 CONFIG_PACKAGE_kmod-tun=y
+CONFIG_PACKAGE_snmpd=n
+CONFIG_PACKAGE_libcap=y
+CONFIG_PACKAGE_libcap-bin=y
+CONFIG_PACKAGE_ip6tables-mod-nat=y
+CONFIG_PACKAGE_iptables-mod-extra=y
+CONFIG_PACKAGE_vsftpd=n
 CONFIG_PACKAGE_openssh-sftp-server=y
-CONFIG_PACKAGE_qemu-ga=y
+CONFIG_PACKAGE_qemu-ga=n
 CONFIG_PACKAGE_autocore-x86=y
 EOF
 
@@ -368,10 +373,3 @@ sed -i 's/^[ \t]*//g' ./.config
 cd $HOME
 
 # 配置文件创建完成
-
-# Argon 主题已包含设置功能；当前 feeds 中的旧版独立配置翻译包依赖缺失的 luci-app-argon-config，
-# 会导致 package/install 阶段失败。只保留 Argon 主题和 LuCI 简体中文，不选旧配置插件/翻译包。
-cat >> .config <<EOF
-CONFIG_PACKAGE_luci-app-argon-config=n
-CONFIG_PACKAGE_luci-i18n-argon-config-zh-cn=n
-EOF
