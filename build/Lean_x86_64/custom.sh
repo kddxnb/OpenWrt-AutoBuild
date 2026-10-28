@@ -17,6 +17,11 @@ cat feeds.conf.default
 # 添加第三方软件包
 git clone https://github.com/db-one/dbone-packages.git -b 23.05 package/dbone-packages
 
+# 补回 Argon 主题配置兼容包，解决 luci-i18n-argon-config-zh-cn 缺少父包的问题
+git clone --depth=1 https://github.com/jerrykuku/luci-theme-argon.git /tmp/luci-theme-argon
+mkdir -p package/lean/luci-app-argon-config
+cp -a /tmp/luci-theme-argon/compat/luci-app-argon-config/. package/lean/luci-app-argon-config/
+
 # 删除部分默认包
 rm -rf feeds/luci/applications/luci-app-qbittorrent
 rm -rf feeds/luci/applications/luci-app-openclash
