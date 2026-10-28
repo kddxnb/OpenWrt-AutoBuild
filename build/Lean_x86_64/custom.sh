@@ -20,7 +20,7 @@ git clone https://github.com/db-one/dbone-packages.git -b 23.05 package/dbone-pa
 # 删除部分默认包
 rm -rf feeds/luci/applications/luci-app-qbittorrent
 rm -rf feeds/luci/applications/luci-app-openclash
-rm -rf feeds/luci/themes/luci-theme-argon
+# 保留 Argon 主题源码，不能删除，否则主题包可能缺失
 
 # 安装源
 ./scripts/feeds install -a -f
@@ -219,14 +219,14 @@ EOF
 cat >> .config <<EOF
 # CONFIG_PACKAGE_luci-app-oaf=y #应用过滤
 CONFIG_PACKAGE_luci-app-openclash=y #OpenClash客户端
-CONFIG_PACKAGE_luci-app-nikki=y #nikki 客户端
+# CONFIG_PACKAGE_luci-app-nikki is not set #移除Nikki，保留OpenClash
 # CONFIG_PACKAGE_luci-app-serverchan=y #微信推送
 # CONFIG_PACKAGE_luci-app-eqos=y #IP限速
 # CONFIG_PACKAGE_luci-app-control-weburl=y #网址过滤
 # CONFIG_PACKAGE_luci-app-smartdns=y #smartdns服务器
 # CONFIG_PACKAGE_luci-app-adguardhome=y #ADguardhome
 CONFIG_PACKAGE_luci-app-poweroff=y #关机（增加关机功能）
-# CONFIG_PACKAGE_luci-app-argon-config=y #argon主题设置
+CONFIG_PACKAGE_luci-app-argon-config=y #保留Argon主题配置界面
 # CONFIG_PACKAGE_luci-app-autotimeset=y #定时重启系统，网络
 # CONFIG_PACKAGE_luci-app-ddnsto=y #小宝开发的DDNS.to内网穿透
 # CONFIG_PACKAGE_ddnsto=y #DDNS.to内网穿透软件包
@@ -234,18 +234,18 @@ EOF
 
 # ShadowsocksR插件:
 cat >> .config <<EOF
-CONFIG_PACKAGE_luci-app-ssr-plus=y
+# CONFIG_PACKAGE_luci-app-ssr-plus is not set #移除SSR-Plus
 # CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_SagerNet_Core is not set
 EOF
 
 # Passwall插件:
 cat >> .config <<EOF
-CONFIG_PACKAGE_luci-app-passwall=y
+# CONFIG_PACKAGE_luci-app-passwall is not set #移除Passwall
 # CONFIG_PACKAGE_luci-app-passwall2=y
 # CONFIG_PACKAGE_naiveproxy=y
-CONFIG_PACKAGE_chinadns-ng=y
+# CONFIG_PACKAGE_chinadns-ng is not set #Passwall相关依赖不再单独安装
 # CONFIG_PACKAGE_brook=y
-CONFIG_PACKAGE_trojan-go=y
+# CONFIG_PACKAGE_trojan-go is not set #Passwall相关依赖不再单独安装
 CONFIG_PACKAGE_xray-plugin=n
 CONFIG_PACKAGE_shadowsocks-rust-sslocal=n
 EOF
@@ -313,7 +313,7 @@ CONFIG_PACKAGE_luci-app-wireguard=n #wireguard端
 #
 # VPN相关插件(禁用):
 #
-CONFIG_PACKAGE_luci-app-v2ray-server=y #V2ray服务器
+# CONFIG_PACKAGE_luci-app-v2ray-server is not set #移除V2Ray服务器插件
 CONFIG_PACKAGE_luci-app-pptp-server=n #PPTP VPN 服务器
 CONFIG_PACKAGE_luci-app-ipsec-vpnd=n #ipsec VPN服务
 CONFIG_PACKAGE_luci-app-openvpn-server=n #openvpn服务
